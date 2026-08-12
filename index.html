@@ -312,7 +312,7 @@
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="header-call mono" href="tel:+97470439584">☎ +974 7043 9584</a>
+    <a class="header-call mono" href="#jobs">Browse Jobs</a>
   </div>
 </header>
 
@@ -467,7 +467,7 @@
       <div class="contact-panel">
         <div class="contact-card">
           <div class="label">Phone / WhatsApp</div>
-          <a class="value" href="tel:+97470439584">+974 7043 9584</a>
+          <a class="value" href="#jobs">+974 7043 9584</a>
           <p>Available for calls and WhatsApp messages regarding job listings and recruitment.</p>
         </div>
         <div class="contact-card">
@@ -508,9 +508,9 @@
 </footer>
 
 <!-- STICKY CALL STRIP -->
-<div class="call-strip" role="contentinfo" aria-label="Quick contact">
-  <a class="call-a" href="tel:+97470439584">☎ <span class="txt">Call Now</span></a>
-  <a class="wa-a" href="https://wa.me/97470439584" target="_blank" rel="noopener">🟢 <span class="txt">WhatsApp</span></a>
+<div class="call-strip" role="contentinfo" aria-label="Quick links">
+  <a class="call-a" href="#jobs">🔎 <span class="txt">Browse Jobs</span></a>
+  <a class="wa-a" href="#jobs">📋 <span class="txt">View Listings</span></a>
   <a class="mail-a" href="mailto:abusiddik854@gmail.com">✉ <span class="txt">Email</span></a>
 </div>
 
@@ -527,7 +527,7 @@ const jobs = [
     code:"QJ-1042", title:"Heavy Vehicle Driver", category:"Driving",
     location:"Doha Industrial Area", type:"Full-time", salary:"QAR 1,800",
     benefits:"Accommodation", recruiter:"Al Rayyan Manpower",
-    phone:"+97470439584", whatsapp:"97470439584", urgent:true,
+    phone:"", whatsapp:"", urgent:true,
     source:"", posted:"2026-08-12"
   },
   {
@@ -643,11 +643,11 @@ renderJobs();
  3) Put your Project URL and anon key below.
  4) Add jobs from admin.html.
 */
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://fxyegdimxtebocqwmhzp.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_bGAlyVM5FI1SKhPJo37bRw_Z6TEMEMz";
 
 async function loadLiveJobs(){
-  if (SUPABASE_URL.startsWith("YOUR_") || SUPABASE_ANON_KEY.startsWith("YOUR_")) return;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
 
   try{
     const r = await fetch(
