@@ -1,38 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Qatar Job — Admin</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{margin:0;background:#f6f1e6;color:#1b1b1b;font-family:Inter,Arial,sans-serif}.wrap{max-width:900px;margin:0 auto;padding:28px 18px}.card{background:#fff;border:1px solid #d8d0c0;border-radius:14px;padding:22px;margin:16px 0}h1,h2{color:#0f2438}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:.85rem;font-weight:600;color:#4a4536}input,select,textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:11px;border:1px solid #cfc7b8;border-radius:8px;font:inherit}textarea{min-height:90px}.full{grid-column:1/-1}button{background:#7a1f2b;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;margin-right:8px}button.secondary{background:#0f2438}button.ghost{background:#e9e2d5;color:#0f2438}.hint{color:#5d5a51;font-size:.88rem;line-height:1.5}.status{padding:10px;border-radius:8px;background:#f6f1e6;margin-top:10px}.hidden{display:none}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}small.muted{color:#6b665d}@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
-</style></head>
-<body><div class="wrap">
-<div class="topbar"><h1>Qatar Job Admin</h1><button id="logout" class="ghost hidden">Log out</button></div>
-<p class="hint">Only publish vacancies you are authorized to republish. Recruiter contact numbers should be supplied by the recruiter or another authorized source.</p>
+:root{--navy:#0F2438;--sand:#F6F1E6;--gold:#C08A3E;--maroon:#7A1F2B;--ink:#1B1B1B;--line:#ddd6c8;--white:#fff;--green:#18794e}
+*{box-sizing:border-box}body{margin:0;background:var(--sand);color:var(--ink);font-family:Inter,Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:18px 20px}header .inner{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}h1,h2{margin:0}h1{font-size:1.25rem}main{max-width:1100px;margin:25px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px}
+input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;margin:6px 0 12px;font:inherit}
+button{border:0;border-radius:8px;padding:11px 15px;font-weight:700;cursor:pointer}
+.primary{background:var(--maroon);color:#fff}.approve{background:var(--green);color:#fff}.reject{background:var(--maroon);color:#fff}.logout{background:var(--gold);color:var(--navy)}
+.muted{color:#666;font-size:.9rem}.status{margin-top:10px;font-weight:700}.ok{color:var(--green)}.err{color:var(--maroon)}
+.job{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:12px;background:#fff}
+.job h3{margin:0 0 8px;color:var(--navy)}.meta{font-size:.9rem;line-height:1.7}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.hidden{display:none}.pill{display:inline-block;padding:4px 9px;border-radius:20px;background:#eee;font-size:.75rem;font-weight:700}
+@media(max-width:600px){header .inner{align-items:flex-start;flex-direction:column}.actions button{flex:1}}
+</style>
+</head>
+<body>
+<header><div class="inner"><div><h1>Qatar Job — Admin Panel</h1><div class="muted" style="color:#ddd">Review employer submissions</div></div><button id="logout" class="logout hidden">Log out</button></div></header>
+<main>
+<section id="loginCard" class="card">
+  <h2>Admin Login</h2>
+  <p class="muted">Use your Supabase admin account.</p>
+  <form id="loginForm">
+    <label>Email</label><input id="email" type="email" required>
+    <label>Password</label><input id="password" type="password" required>
+    <button class="primary" type="submit">Login</button>
+    <div id="loginStatus" class="status"></div>
+  </form>
+</section>
 
-<div class="card" id="loginCard"><h2>Admin login</h2><p class="hint">Sign in with the Supabase admin account created for this project.</p>
-<div class="grid"><label class="full">Email<input id="email" type="email" autocomplete="username"></label><label class="full">Password<input id="password" type="password" autocomplete="current-password"></label></div><br><button id="loginBtn">Log in</button><div id="loginMsg" class="status"></div></div>
+<section id="panel" class="hidden">
+  <div class="card">
+    <h2>Pending Jobs</h2>
+    <p class="muted">Approve a job to make it visible on the public website. Reject removes it from the queue.</p>
+    <button id="refresh" class="primary">Refresh</button>
+    <div id="status" class="status"></div>
+    <div id="jobs"></div>
+  </div>
+</section>
+</main>
 
-<div id="adminArea" class="hidden">
-<div class="card"><h2>Supabase connection</h2><div class="status">Connected to the Qatar-Job project.</div><small class="muted">The publishable key is embedded in this page; never put a secret/service-role key here.</small></div>
-<div class="card"><h2>Add job</h2><form id="jobForm"><div class="grid">
-<label>Job code<input id="code" required placeholder="QJ-1043"></label><label>Job title<input id="title" required placeholder="Driver"></label>
-<label>Category<select id="category"><option>Construction</option><option>Driving</option><option>Domestic Work</option><option>Hospitality</option><option>Security</option><option>Cleaning</option><option>Skilled Labor</option><option>Office / Admin</option><option>Retail</option></select></label>
-<label>Location<input id="location" required placeholder="Doha"></label><label>Job type<input id="job_type" placeholder="Full-time"></label><label>Salary<input id="salary" placeholder="QAR 2,000"></label>
-<label>Benefits<input id="benefits" placeholder="Accommodation"></label><label>Recruiter / Company<input id="recruiter" required placeholder="Company name"></label>
-<label>Recruiter phone<input id="phone" placeholder="+974..."></label><label>WhatsApp<input id="whatsapp" placeholder="974..."></label>
-<label class="full">Original listing URL<input id="source_url" type="url" placeholder="https://..."></label><label class="full">Description<textarea id="description"></textarea></label>
-<label><input id="urgent" type="checkbox" style="width:auto"> Urgent</label></div><br><button type="submit">Publish job</button><div id="msg" class="status"></div></form></div>
-<div class="card"><h2>Important</h2><p class="hint">Do not publish private numbers without permission. For listings copied from other websites, only republish information you are authorized to use and keep the original source URL when appropriate.</p></div>
-</div></div>
 <script>
-const SUPABASE_URL='https://fxyegdimxtebocqwmhzp.supabase.co'; const SUPABASE_KEY='sb_publishable_bGAlyVM5FI1SKhPJo37bRw_Z6TEMEMz';
-const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); const $=id=>document.getElementById(id);
-async function refresh(){const {data:{session}}=await client.auth.getSession(); setUI(session);}
-function setUI(session){const ok=!!session; $('loginCard').classList.toggle('hidden',ok); $('adminArea').classList.toggle('hidden',!ok); $('logout').classList.toggle('hidden',!ok);}
-$('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value; const {error}=await client.auth.signInWithPassword({email,password}); $('loginMsg').textContent=error?error.message:'Logged in.'; if(!error) refresh();};
-$('logout').onclick=async()=>{await client.auth.signOut();refresh();};
-$('jobForm').addEventListener('submit',async e=>{e.preventDefault();const {data:{session}}=await client.auth.getSession();if(!session){$('msg').textContent='Please log in first.';return;} const payload={code:$('code').value.trim(),title:$('title').value.trim(),category:$('category').value,location:$('location').value.trim(),job_type:$('job_type').value.trim()||'Full-time',salary:$('salary').value.trim(),benefits:$('benefits').value.trim(),recruiter:$('recruiter').value.trim(),phone:$('phone').value.trim(),whatsapp:$('whatsapp').value.trim(),source_url:$('source_url').value.trim(),description:$('description').value.trim(),urgent:$('urgent').checked,status:'active'}; const {error}=await client.from('jobs').insert(payload); $('msg').textContent=error?'Could not publish: '+error.message:'Job published successfully.';if(!error)e.target.reset();});
-refresh();
-</script></body></html>
+const SUPABASE_URL = "https://fxyegdimxtebocqwmhzp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_bGAlyVM5FI1SKhPJo37bRw_Z6TEMEMz";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const loginCard=document.getElementById("loginCard"), panel=document.getElementById("panel");
+const loginStatus=document.getElementById("loginStatus"), statusEl=document.getElementById("status");
+const jobsEl=document.getElementById("jobs"), logout=document.getElementById("logout");
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+async function loadPending(){
+  statusEl.className="status"; statusEl.textContent="Loading...";
+  const {data,error}=await client.from("jobs").select("*").eq("status","pending").order("posted_at",{ascending:false});
+  if(error){statusEl.className="status err";statusEl.textContent=error.message;return}
+  statusEl.textContent=data.length ? `${data.length} pending job(s)` : "No pending jobs.";
+  jobsEl.innerHTML=data.map(j=>`
+    <article class="job">
+      <h3>${esc(j.title)} <span class="pill">${esc(j.category)}</span></h3>
+      <div class="meta">
+        <b>Recruiter:</b> ${esc(j.recruiter)}<br>
+        <b>Location:</b> ${esc(j.location)}<br>
+        <b>Type:</b> ${esc(j.job_type)}<br>
+        <b>Salary:</b> ${esc(j.salary||"Not specified")}<br>
+        <b>Phone:</b> ${esc(j.phone||"Not specified")}<br>
+        <b>WhatsApp:</b> ${esc(j.whatsapp||"Not specified")}<br>
+        <b>Benefits:</b> ${esc(j.benefits||"Not specified")}<br>
+        <b>Description:</b> ${esc(j.description||"Not specified")}
+      </div>
+      <div class="actions">
+        <button class="approve" data-action="approve" data-id="${esc(j.id)}">Approve & Publish</button>
+        <button class="reject" data-action="reject" data-id="${esc(j.id)}">Reject / Delete</button>
+      </div>
+    </article>`).join("");
+}
+
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault(); loginStatus.textContent="Logging in...";
+ const {error}=await client.auth.signInWithPassword({email:email.value,password:password.value});
+ if(error){loginStatus.className="status err";loginStatus.textContent=error.message;return}
+ loginStatus.textContent="";
+ loginCard.classList.add("hidden");panel.classList.remove("hidden");logout.classList.remove("hidden");loadPending();
+});
+logout.addEventListener("click",async()=>{await client.auth.signOut();location.reload()});
+document.getElementById("refresh").addEventListener("click",loadPending);
+
+jobsEl.addEventListener("click",async e=>{
+ const btn=e.target.closest("button[data-action]"); if(!btn)return;
+ btn.disabled=true;
+ const id=btn.dataset.id, action=btn.dataset.action;
+ const next=action==="approve" ? "active" : "rejected";
+ const {error}=await client.from("jobs").update({status:next,updated_at:new Date().toISOString()}).eq("id",id);
+ if(error){statusEl.className="status err";statusEl.textContent=error.message;btn.disabled=false;return}
+ statusEl.className="status ok";statusEl.textContent=action==="approve"?"Job approved and published.":"Job rejected.";
+ loadPending();
+});
+
+(async()=>{
+ const {data}=await client.auth.getSession();
+ if(data.session){loginCard.classList.add("hidden");panel.classList.remove("hidden");logout.classList.remove("hidden");loadPending()}
+})();
+</script>
+</body>
+</html>
