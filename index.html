@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qatar Job — Find Work in Qatar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0F2438;
+    --navy-2:#16324D;
+    --sand:#EDE3D0;
+    --sand-2:#F6F1E6;
+    --gold:#C08A3E;
+    --gold-dark:#9C6D2C;
+    --maroon:#7A1F2B;
+    --ink:#1B1B1B;
+    --ink-soft:#4A4536;
+    --white:#FFFFFF;
+    --line: rgba(15,36,56,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--sand-2);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px; /* room for sticky call strip */
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    margin:0;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:'IBM Plex Mono',monospace; letter-spacing:0.02em; }
+  a{color:inherit;}
+  img,svg{display:block;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+
+  /* Skip link for accessibility */
+  .skip-link{position:absolute;left:-999px;top:0;background:var(--gold);color:var(--navy);padding:10px 16px;z-index:200;}
+  .skip-link:focus{left:16px;top:16px;}
+
+  a:focus-visible,button:focus-visible,input:focus-visible{
+    outline:3px solid var(--gold);
+    outline-offset:2px;
+  }
+
+  /* ===== HEADER ===== */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:var(--navy);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;max-width:1120px;margin:0 auto;
+    gap:16px;
+  }
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .logo-mark{width:38px;height:38px;flex-shrink:0;}
+  .logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:1.28rem;color:var(--white);line-height:1;}
+  .logo-text span{color:var(--gold);}
+  .logo-sub{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.55);letter-spacing:0.14em;text-transform:uppercase;margin-top:2px;}
+
+  nav.main-nav{display:flex;gap:28px;}
+  nav.main-nav a{
+    color:rgba(255,255,255,0.82);text-decoration:none;font-size:0.94rem;font-weight:500;
+    padding:6px 2px;border-bottom:2px solid transparent;transition:border-color .15s, color .15s;
+  }
+  nav.main-nav a:hover{color:var(--white);border-color:var(--gold);}
+
+  .header-call{
+    display:flex;align-items:center;gap:8px;
+    background:var(--gold);color:var(--navy);
+    padding:8px 14px;border-radius:6px;
+    text-decoration:none;font-weight:600;font-size:0.88rem;
+    flex-shrink:0;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .header-call:hover{background:#D49A4E;}
+  .menu-toggle{display:none;}
+
+  /* ===== HERO ===== */
+  .hero{
+    background:
+      radial-gradient(ellipse at 15% -10%, rgba(192,138,62,0.22), transparent 55%),
+      var(--navy);
+    color:var(--white);
+    padding:72px 24px 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .dune{
+    position:absolute; left:0; right:0; bottom:-2px; height:120px;
+    background:var(--sand-2);
+    -webkit-clip-path: polygon(0 60%, 8% 55%, 20% 62%, 33% 50%, 47% 60%, 60% 48%, 74% 58%, 88% 46%, 100% 56%, 100% 100%, 0 100%);
+    clip-path: polygon(0 60%, 8% 55%, 20% 62%, 33% 50%, 47% 60%, 60% 48%, 74% 58%, 88% 46%, 100% 56%, 100% 100%, 0 100%);
+  }
+  .hero-inner{max-width:1120px;margin:0 auto;position:relative;z-index:2;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:16px;display:inline-block;
+    border:1px solid rgba(192,138,62,0.5); padding:5px 12px;border-radius:100px;
+  }
+  .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:1.12;color:var(--white);max-width:15ch;}
+  .hero h1 em{font-style:normal;color:var(--gold);}
+  .hero p{margin-top:18px;font-size:1.08rem;line-height:1.6;color:rgba(255,255,255,0.78);max-width:46ch;}
+
+  .search-panel{
+    margin-top:34px;background:var(--sand-2);border-radius:10px;
+    padding:10px;display:flex;gap:8px;flex-wrap:wrap;
+    box-shadow:0 20px 40px -14px rgba(0,0,0,0.4);
+    max-width:640px;
+  }
+  .search-panel input, .search-panel select{
+    border:none;background:transparent;font-family:'Inter',sans-serif;
+    font-size:0.95rem;color:var(--ink);padding:12px 14px;flex:1;min-width:140px;
+  }
+  .search-panel input:focus, .search-panel select:focus{outline:none;}
+  .search-panel button{
+    background:var(--maroon);color:var(--white);border:none;border-radius:6px;
+    padding:12px 22px;font-weight:600;font-size:0.95rem;cursor:pointer;
+    font-family:'Inter',sans-serif; transition:background .15s;
+  }
+  .search-panel button:hover{background:#63161F;}
+
+  .hero-stats{display:flex;gap:36px;margin-top:40px;flex-wrap:wrap;}
+  .hero-stats .stat-num{font-family:'IBM Plex Mono',monospace;font-size:1.6rem;color:var(--gold);font-weight:600;}
+  .hero-stats .stat-label{font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:2px;}
+
+  /* ===== CATEGORY STRIP ===== */
+  .categories{padding:40px 0 8px;}
+  .categories .wrap{overflow-x:auto;}
+  .cat-row{display:flex;gap:10px;padding-bottom:6px;}
+  .chip{
+    flex-shrink:0;background:var(--white);border:1px solid var(--line);
+    padding:9px 16px;border-radius:100px;font-size:0.87rem;font-weight:500;
+    color:var(--ink-soft);white-space:nowrap;cursor:pointer;transition:all .15s;
+    text-decoration:none;
+  }
+  .chip:hover, .chip.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+
+  /* ===== SECTION HEADERS ===== */
+  .section{padding:56px 0;}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;gap:20px;flex-wrap:wrap;}
+  .section-head .tag{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-dark);display:block;margin-bottom:8px;}
+  .section-head h2{font-size:clamp(1.5rem,3vw,2rem);}
+  .section-head p{color:var(--ink-soft);font-size:0.95rem;margin-top:6px;max-width:50ch;}
+
+  /* ===== JOB CARDS (permit / ID-card styled) ===== */
+  .job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+  .job-card{
+    background:var(--white);border-radius:12px;border:1px solid var(--line);
+    overflow:hidden; position:relative; display:flex;flex-direction:column;
+    transition:transform .18s, box-shadow .18s;
+  }
+  .job-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(15,36,56,0.35);}
+  .job-card-stripe{height:6px;background:var(--gold);}
+  .job-card.urgent .job-card-stripe{background:var(--maroon);}
+  .job-card-body{padding:20px 20px 18px;flex:1;display:flex;flex-direction:column;}
+  .job-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .job-code{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--ink-soft);opacity:0.65;}
+  .badge{
+    font-family:'IBM Plex Mono',monospace;font-size:0.66rem;text-transform:uppercase;letter-spacing:0.06em;
+    background:var(--sand);color:var(--gold-dark);padding:4px 9px;border-radius:100px;font-weight:600;
+  }
+  .badge.urgent{background:rgba(122,31,43,0.1);color:var(--maroon);}
+  .job-title{font-family:'Fraunces',serif;font-size:1.18rem;font-weight:600;color:var(--navy);margin-top:12px;}
+  .job-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:0.83rem;color:var(--ink-soft);}
+  .job-meta span{display:flex;align-items:center;gap:5px;}
+  .job-salary{margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:1.02rem;color:var(--navy);font-weight:600;}
+  .job-salary small{font-family:'Inter',sans-serif;font-weight:400;color:var(--ink-soft);font-size:0.75rem;}
+  .job-card-foot{
+    border-top:1px dashed var(--line); margin-top:16px;padding-top:14px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+  }
+  .recruiter{font-size:0.82rem;color:var(--ink-soft);}
+  .recruiter b{color:var(--ink);display:block;font-size:0.86rem;}
+  .call-btn{
+    background:var(--navy);color:var(--white);border:none;border-radius:7px;
+    padding:9px 14px;font-size:0.82rem;font-weight:600;text-decoration:none;
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .call-btn:hover{background:var(--maroon);}
+
+  /* ===== POST A JOB BAND ===== */
+  .post-band{
+    background:var(--navy); color:var(--white); border-radius:16px;
+    padding:44px 36px; display:flex;justify-content:space-between;align-items:center;
+    gap:24px; flex-wrap:wrap;
+    background-image: radial-gradient(circle at 90% 20%, rgba(192,138,62,0.25), transparent 50%);
+  }
+  .post-band h2{color:var(--white);font-size:1.6rem;max-width:20ch;}
+  .post-band p{color:rgba(255,255,255,0.72);margin-top:8px;max-width:40ch;font-size:0.95rem;}
+  .btn-gold{
+    background:var(--gold);color:var(--navy);border:none;border-radius:7px;
+    padding:14px 26px;font-weight:700;font-size:0.95rem;text-decoration:none;
+    display:inline-block; white-space:nowrap; flex-shrink:0;
+  }
+  .btn-gold:hover{background:#D49A4E;}
+
+  /* ===== ABOUT ===== */
+  .about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:start;}
+  .about-grid p{color:var(--ink-soft);line-height:1.75;font-size:0.98rem;margin-top:14px;}
+  .about-list{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:16px;}
+  .about-list li{display:flex;gap:14px;align-items:flex-start;}
+  .about-list .num{
+    font-family:'IBM Plex Mono',monospace;color:var(--gold-dark);font-weight:600;
+    border:1px solid var(--line);border-radius:50%;width:30px;height:30px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;background:var(--white);
+  }
+  .about-list b{color:var(--navy);display:block;font-size:0.95rem;}
+  .about-list span{color:var(--ink-soft);font-size:0.87rem;}
+
+  /* ===== CONTACT ===== */
+  .contact-panel{
+    background:var(--sand);border-radius:16px;padding:44px 36px;
+    display:grid;grid-template-columns:1fr 1fr;gap:36px;
+  }
+  .contact-card{background:var(--white);border-radius:12px;padding:22px;border:1px solid var(--line);}
+  .contact-card .label{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold-dark);}
+  .contact-card .value{font-family:'IBM Plex Mono',monospace;font-size:1.15rem;color:var(--navy);margin-top:8px;word-break:break-all;text-decoration:none;display:block;font-weight:600;}
+  .contact-card .value:hover{color:var(--maroon);}
+  .contact-card p{color:var(--ink-soft);font-size:0.85rem;margin-top:10px;}
+
+  /* ===== FOOTER ===== */
+  footer{background:var(--navy);color:rgba(255,255,255,0.65);padding:44px 24px 100px;margin-top:40px;}
+  .footer-inner{max-width:1120px;margin:0 auto;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .footer-logo{display:flex;align-items:center;gap:10px;}
+  .footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+  .footer-links a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.88rem;}
+  .footer-links a:hover{color:var(--gold);}
+  .footer-bottom{max-width:1120px;margin:24px auto 0;font-size:0.78rem;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.1);padding-top:18px;}
+
+  /* ===== STICKY CALL STRIP ===== */
+  .call-strip{
+    position:fixed;bottom:0;left:0;right:0;z-index:150;
+    background:var(--white);border-top:1px solid var(--line);
+    display:flex;box-shadow:0 -10px 24px -14px rgba(0,0,0,0.2);
+  }
+  .call-strip a{
+    flex:1;text-align:center;padding:14px 8px;font-weight:600;font-size:0.88rem;
+    text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .call-strip .call-a{background:var(--maroon);color:var(--white);}
+  .call-strip .wa-a{background:#1F8A57;color:var(--white);}
+  .call-strip .mail-a{background:var(--navy);color:var(--white);}
+
+
+  .job-tools{
+    display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:20px;
+    background:var(--white);padding:12px;border:1px solid var(--line);border-radius:12px;
+  }
+  .job-tools input,.job-tools select{
+    width:100%;border:1px solid var(--line);background:var(--sand-2);border-radius:8px;
+    padding:12px 13px;font:inherit;color:var(--ink);min-width:0;
+  }
+  .job-tools input:focus,.job-tools select:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .job-empty{
+    background:var(--white);border:1px dashed var(--line);border-radius:12px;padding:28px;
+    text-align:center;color:var(--ink-soft);
+  }
+  .source-link{font-size:.76rem;color:var(--gold-dark);text-decoration:none;}
+  .source-link:hover{text-decoration:underline;}
+  .job-card .job-description{margin-top:10px;color:var(--ink-soft);font-size:.84rem;line-height:1.5;}
+  .job-card .job-card-foot{margin-top:auto;}
+  .job-card .recruiter small{display:block;color:#5d735f;font-size:.72rem;margin-top:2px;}
+
+  @media (max-width:860px){
+    nav.main-nav{display:none;}
+    .about-grid{grid-template-columns:1fr;}
+    .contact-panel{grid-template-columns:1fr;padding:30px 22px;}
+    .job-tools{grid-template-columns:1fr;}
+    .post-band{padding:32px 24px;}
+  }
+  @media (max-width:520px){
+    .call-strip .mail-a span.txt{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .job-card{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header>
+  <div class="header-inner">
+    <a href="#main" class="logo" aria-label="Qatar Job home">
+      <svg class="logo-mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="44" height="44" rx="9" fill="#C08A3E"/>
+        <path d="M9 30 L16 14 L20 14 L20 30 L16.5 30 L16.5 19 L12.3 30 Z" fill="#0F2438"/>
+        <path d="M23 30 V14 H27.6 C31.2 14 33.8 16.6 33.8 20.4 C33.8 23.6 31.9 25.9 29.1 26.6 L34 30 H29.3 L25.2 26.8 H26.9 V30 Z M26.9 23.4 H27.3 C29.1 23.4 30 22.2 30 20.5 C30 18.8 29.1 17.6 27.3 17.6 H26.9 Z" fill="#0F2438"/>
+        <circle cx="32.5" cy="29.5" r="2.6" fill="#7A1F2B"/>
+      </svg>
+      <div>
+        <div class="logo-text">Qatar <span>Job</span></div>
+        <div class="logo-sub">Recruitment Directory</div>
+      </div>
+    </a>
+    <nav class="main-nav" aria-label="Main">
+      <a href="#jobs">Browse Jobs</a>
+      <a href="#post">Post a Job</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="header-call mono" href="tel:+97470439584">☎ +974 7043 9584</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">Qatar's Job Directory</span>
+      <h1>One call away from your <em>next job in Qatar</em></h1>
+      <p>Browse verified vacancies across construction, driving, hospitality, domestic work, security and more — every listing shows a direct recruiter number, so you can call today and start tomorrow.</p>
+
+      <form class="search-panel" role="search" aria-label="Search jobs">
+        <input type="text" placeholder="Search job title, e.g. Driver, Cleaner..." aria-label="Job keyword">
+        <select aria-label="Category">
+          <option value="">All categories</option>
+          <option>Construction</option>
+          <option>Driving</option>
+          <option>Domestic Work</option>
+          <option>Hospitality</option>
+          <option>Security</option>
+          <option>Retail</option>
+        </select>
+        <button type="submit">Search Jobs</button>
+      </form>
+
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">240+</div>
+          <div class="stat-label">Active listings</div>
+        </div>
+        <div>
+          <div class="stat-num">60+</div>
+          <div class="stat-label">Verified recruiters</div>
+        </div>
+        <div>
+          <div class="stat-num">9</div>
+          <div class="stat-label">Job categories</div>
+        </div>
+      </div>
+    </div>
+    <div class="dune" aria-hidden="true"></div>
+  </section>
+
+  <!-- CATEGORY CHIPS -->
+  <section class="categories">
+    <div class="wrap">
+      <div class="cat-row">
+        <a href="#jobs" class="chip active">All Jobs</a>
+        <a href="#jobs" class="chip">🏗 Construction</a>
+        <a href="#jobs" class="chip">🚗 Driving</a>
+        <a href="#jobs" class="chip">🏠 Domestic Work</a>
+        <a href="#jobs" class="chip">🍽 Hospitality</a>
+        <a href="#jobs" class="chip">🛡 Security</a>
+        <a href="#jobs" class="chip">🧹 Cleaning</a>
+        <a href="#jobs" class="chip">🛠 Skilled Labor</a>
+        <a href="#jobs" class="chip">🏢 Office / Admin</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOB LISTINGS -->
+  <section class="section" id="jobs">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="tag">Live vacancies</span>
+          <h2>Recent jobs in Qatar</h2>
+          <p>Search vacancies by job, category and location. Contact details are shown only when supplied and authorized.</p>
+        </div>
+      </div>
+
+      <div class="job-tools" aria-label="Job filters">
+        <input id="jobSearch" type="search" placeholder="Search jobs, company or location..." aria-label="Search jobs">
+        <select id="jobCategory" aria-label="Filter by category">
+          <option value="">All categories</option>
+          <option>Construction</option>
+          <option>Driving</option>
+          <option>Domestic Work</option>
+          <option>Hospitality</option>
+          <option>Security</option>
+          <option>Cleaning</option>
+          <option>Skilled Labor</option>
+          <option>Office / Admin</option>
+          <option>Retail</option>
+        </select>
+        <select id="jobLocation" aria-label="Filter by location">
+          <option value="">All locations</option>
+          <option>Doha</option>
+          <option>Lusail</option>
+          <option>Al Wakrah</option>
+          <option>Al Rayyan</option>
+          <option>Industrial Area</option>
+        </select>
+      </div>
+
+      <div id="jobGrid" class="job-grid" aria-live="polite"></div>
+      <div id="jobEmpty" class="job-empty" hidden>No matching jobs found.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POST A JOB -->
+  <section class="section" id="post" style="padding-top:0;">
+    <div class="wrap">
+      <div class="post-band">
+        <div>
+          <h2>Hiring in Qatar? Post your vacancy free.</h2>
+          <p>Reach thousands of job seekers directly. Submit your listing and our team will verify and publish it within 24 hours.</p>
+        </div>
+        <a class="btn-gold" href="mailto:abusiddik854@gmail.com?subject=Post%20a%20Job%20-%20Qatar%20Job">Post a Job →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="wrap about-grid">
+      <div>
+        <span class="tag">About Qatar Job</span>
+        <h2>Connecting real workers with real employers.</h2>
+        <p>Qatar Job is a directory built for one purpose — helping job seekers find genuine vacancies across Qatar without the confusion of scattered ads and unclear contacts. Every listing includes a direct recruiter number, so there's no guesswork about who to call.</p>
+        <p>Whether you're looking for construction work, a driving job, hospitality, domestic work, or a skilled trade, Qatar Job brings every opportunity into one simple, searchable place.</p>
+      </div>
+      <ul class="about-list">
+        <li>
+          <span class="num mono">01</span>
+          <div><b>Browse by category</b><span>Filter jobs by trade, location and salary in seconds.</span></div>
+        </li>
+        <li>
+          <span class="num mono">02</span>
+          <div><b>Call the recruiter directly</b><span>No middlemen — every card shows a working phone number.</span></div>
+        </li>
+        <li>
+          <span class="num mono">03</span>
+          <div><b>Start your job in Qatar</b><span>Confirm details with the recruiter and begin the process.</span></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="tag">Get in touch</span>
+          <h2>Contact Qatar Job</h2>
+          <p>Have a question, want to post a job, or need help finding one? Reach us directly.</p>
+        </div>
+      </div>
+      <div class="contact-panel">
+        <div class="contact-card">
+          <div class="label">Phone / WhatsApp</div>
+          <a class="value" href="tel:+97470439584">+974 7043 9584</a>
+          <p>Available for calls and WhatsApp messages regarding job listings and recruitment.</p>
+        </div>
+        <div class="contact-card">
+          <div class="label">Email</div>
+          <a class="value" href="mailto:abusiddik854@gmail.com">abusiddik854@gmail.com</a>
+          <p>Send your job listing details or inquiries — we typically reply within a day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <svg width="30" height="30" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="44" height="44" rx="9" fill="#C08A3E"/>
+        <path d="M9 30 L16 14 L20 14 L20 30 L16.5 30 L16.5 19 L12.3 30 Z" fill="#0F2438"/>
+        <path d="M23 30 V14 H27.6 C31.2 14 33.8 16.6 33.8 20.4 C33.8 23.6 31.9 25.9 29.1 26.6 L34 30 H29.3 L25.2 26.8 H26.9 V30 Z M26.9 23.4 H27.3 C29.1 23.4 30 22.2 30 20.5 C30 18.8 29.1 17.6 27.3 17.6 H26.9 Z" fill="#0F2438"/>
+        <circle cx="32.5" cy="29.5" r="2.6" fill="#7A1F2B"/>
+      </svg>
+      <div>
+        <div style="color:#fff;font-family:'Fraunces',serif;font-weight:700;">Qatar Job</div>
+        <div style="font-size:0.75rem;">Recruitment Directory</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="#jobs">Browse Jobs</a>
+      <a href="#post">Post a Job</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom wrap">
+    © 2026 Qatar Job. All job listings are provided by third-party recruiters — verify details before payment or travel.
+  </div>
+</footer>
+
+<!-- STICKY CALL STRIP -->
+<div class="call-strip" role="contentinfo" aria-label="Quick contact">
+  <a class="call-a" href="tel:+97470439584">☎ <span class="txt">Call Now</span></a>
+  <a class="wa-a" href="https://wa.me/97470439584" target="_blank" rel="noopener">🟢 <span class="txt">WhatsApp</span></a>
+  <a class="mail-a" href="mailto:abusiddik854@gmail.com">✉ <span class="txt">Email</span></a>
+</div>
+
+
+<script>
+/*
+  Qatar Job dynamic listing engine.
+  The demo data below is intentionally separated from the UI.
+  Replace/add entries with jobs you are authorized to publish.
+  For automatic updates, connect this array to your permitted API/backend.
+*/
+const jobs = [
+  {
+    code:"QJ-1042", title:"Heavy Vehicle Driver", category:"Driving",
+    location:"Doha Industrial Area", type:"Full-time", salary:"QAR 1,800",
+    benefits:"Accommodation", recruiter:"Al Rayyan Manpower",
+    phone:"+97470439584", whatsapp:"97470439584", urgent:true,
+    source:"", posted:"2026-08-12"
+  },
+  {
+    code:"QJ-1039", title:"Mason / Block Layer", category:"Construction",
+    location:"Lusail", type:"Full-time", salary:"QAR 1,400",
+    benefits:"Food", recruiter:"Gulf Build Contracting",
+    phone:"", whatsapp:"", urgent:false, source:"", posted:"2026-08-12"
+  },
+  {
+    code:"QJ-1035", title:"Hotel Waiter / Waitress", category:"Hospitality",
+    location:"West Bay, Doha", type:"Full-time", salary:"QAR 1,600",
+    benefits:"Tips", recruiter:"Pearl Hospitality Group",
+    phone:"", whatsapp:"", urgent:false, source:"", posted:"2026-08-11"
+  },
+  {
+    code:"QJ-1031", title:"Security Guard", category:"Security",
+    location:"Al Wakrah", type:"Shift-based", salary:"QAR 1,300",
+    benefits:"Housing", recruiter:"SafeGuard Qatar",
+    phone:"", whatsapp:"", urgent:false, source:"", posted:"2026-08-11"
+  },
+  {
+    code:"QJ-1028", title:"Household Helper", category:"Domestic Work",
+    location:"Al Rayyan", type:"Live-in", salary:"QAR 1,200",
+    benefits:"Housing", recruiter:"Doha Home Staffing",
+    phone:"", whatsapp:"", urgent:false, source:"", posted:"2026-08-10"
+  },
+  {
+    code:"QJ-1024", title:"Electrician", category:"Skilled Labor",
+    location:"Industrial Area", type:"Full-time", salary:"QAR 2,000",
+    benefits:"Overtime", recruiter:"Al Rayyan Manpower",
+    phone:"", whatsapp:"", urgent:false, source:"", posted:"2026-08-10"
+  }
+];
+
+function esc(value){
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function digits(phone){ return String(phone || "").replace(/\D/g,""); }
+
+function renderJobs(){
+  const grid = document.getElementById("jobGrid");
+  const empty = document.getElementById("jobEmpty");
+  const q = document.getElementById("jobSearch").value.trim().toLowerCase();
+  const cat = document.getElementById("jobCategory").value;
+  const loc = document.getElementById("jobLocation").value.toLowerCase();
+
+  const filtered = jobs.filter(j => {
+    const hay = [j.title,j.category,j.location,j.recruiter,j.code].join(" ").toLowerCase();
+    return (!q || hay.includes(q))
+      && (!cat || j.category === cat)
+      && (!loc || j.location.toLowerCase().includes(loc));
+  });
+
+  grid.innerHTML = filtered.map(j => {
+    const phone = digits(j.phone);
+    const call = phone
+      ? `<a class="call-btn" href="tel:+${esc(phone)}">☎ Call</a>`
+      : `<span class="call-btn" style="opacity:.55;cursor:default">☎ Contact unavailable</span>`;
+    const wa = digits(j.whatsapp);
+    const waBtn = wa
+      ? `<a class="call-btn" href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">🟢 WhatsApp</a>`
+      : "";
+    const source = j.source
+      ? `<a class="source-link" href="${esc(j.source)}" target="_blank" rel="noopener">View original listing ↗</a>`
+      : `<span class="source-link">Direct listing</span>`;
+
+    return `
+      <article class="job-card ${j.urgent ? "urgent" : ""}">
+        <div class="job-card-stripe"></div>
+        <div class="job-card-body">
+          <div class="job-card-top">
+            <span class="job-code mono">${esc(j.code)}</span>
+            <span class="badge ${j.urgent ? "urgent" : ""}">${j.urgent ? "Urgent" : esc(j.category)}</span>
+          </div>
+          <h3 class="job-title">${esc(j.title)}</h3>
+          <div class="job-meta">
+            <span>📍 ${esc(j.location)}</span>
+            <span>🕐 ${esc(j.type)}</span>
+          </div>
+          <div class="job-salary">${esc(j.salary)} <small>/ month + ${esc(j.benefits)}</small></div>
+          <div class="job-description">${source}</div>
+          <div class="job-card-foot">
+            <div class="recruiter">
+              <b>${esc(j.recruiter)}</b>
+              <small>Recruiter contact shown only when supplied/authorized</small>
+            </div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
+              ${call}${waBtn}
+            </div>
+          </div>
+        </div>
+      </article>`;
+  }).join("");
+
+  empty.hidden = filtered.length !== 0;
+}
+
+["jobSearch","jobCategory","jobLocation"].forEach(id =>
+  document.getElementById(id).addEventListener("input", renderJobs)
+);
+renderJobs();
+</script>
+
+
+<script>
+/*
+ Qatar Job — public listing loader
+ 1) Create a Supabase project.
+ 2) Run schema.sql from this package.
+ 3) Put your Project URL and anon key below.
+ 4) Add jobs from admin.html.
+*/
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+async function loadLiveJobs(){
+  if (SUPABASE_URL.startsWith("YOUR_") || SUPABASE_ANON_KEY.startsWith("YOUR_")) return;
+
+  try{
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/jobs?select=*&status=eq.active&order=posted_at.desc`,
+      {headers:{
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+      }}
+    );
+    if(!r.ok) throw new Error("Database request failed");
+    const live = await r.json();
+    if(!Array.isArray(live)) return;
+
+    jobs.length = 0;
+    live.forEach(j => jobs.push({
+      code:j.code, title:j.title, category:j.category, location:j.location,
+      type:j.job_type, salary:j.salary, benefits:j.benefits || "",
+      recruiter:j.recruiter, phone:j.phone || "", whatsapp:j.whatsapp || "",
+      urgent:j.urgent, source:j.source_url || "", posted:j.posted_at
+    }));
+    renderJobs();
+  }catch(err){
+    console.warn("Live jobs unavailable; showing built-in demo listings.", err);
+  }
+}
+loadLiveJobs();
+</script>
+
+</body>
+</html>

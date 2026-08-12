@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qatar Job — Admin</title>
+<style>
+body{margin:0;background:#f6f1e6;color:#1b1b1b;font-family:Inter,Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:28px 18px}
+.card{background:#fff;border:1px solid #d8d0c0;border-radius:14px;padding:22px;margin:16px 0}
+h1,h2{color:#0f2438}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:.85rem;font-weight:600;color:#4a4536}input,select,textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:11px;border:1px solid #cfc7b8;border-radius:8px;font:inherit}
+textarea{min-height:90px}.full{grid-column:1/-1}
+button{background:#7a1f2b;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer}
+button.secondary{background:#0f2438}.hint{color:#5d5a51;font-size:.88rem;line-height:1.5}
+.status{padding:10px;border-radius:8px;background:#f6f1e6;margin-top:10px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Qatar Job Admin</h1>
+<p class="hint">Add and manage vacancies in your Supabase database. Do not publish private or unverified contact information.</p>
+
+<div class="card">
+<h2>1. Supabase connection</h2>
+<div class="grid">
+<div class="full"><label>Project URL<input id="url" placeholder="https://xxxxx.supabase.co"></label></div>
+<div class="full"><label>Anon public key<input id="key" placeholder="eyJ..."></label></div>
+</div>
+<button class="secondary" onclick="saveConfig()">Save connection</button>
+<div id="conn" class="status">Not connected</div>
+</div>
+
+<div class="card">
+<h2>2. Add job</h2>
+<form id="jobForm">
+<div class="grid">
+<label>Job code<input id="code" required placeholder="QJ-1043"></label>
+<label>Job title<input id="title" required placeholder="Driver"></label>
+<label>Category<select id="category"><option>Construction</option><option>Driving</option><option>Domestic Work</option><option>Hospitality</option><option>Security</option><option>Cleaning</option><option>Skilled Labor</option><option>Office / Admin</option><option>Retail</option></select></label>
+<label>Location<input id="location" required placeholder="Doha"></label>
+<label>Job type<input id="job_type" placeholder="Full-time"></label>
+<label>Salary<input id="salary" placeholder="QAR 2,000"></label>
+<label>Benefits<input id="benefits" placeholder="Accommodation"></label>
+<label>Recruiter / Company<input id="recruiter" required placeholder="Company name"></label>
+<label>Recruiter phone<input id="phone" placeholder="+974..."></label>
+<label>WhatsApp<input id="whatsapp" placeholder="974..."></label>
+<label class="full">Original listing URL<input id="source_url" type="url" placeholder="https://..."></label>
+<label class="full">Description<textarea id="description" placeholder="Short job description"></textarea></label>
+<label><input id="urgent" type="checkbox" style="width:auto"> Urgent</label>
+</div>
+<br><button type="submit">Publish job</button>
+<div id="msg" class="status"></div>
+</form>
+</div>
+
+<div class="card">
+<h2>3. Safety & verification</h2>
+<p class="hint">Only publish jobs you are authorized to republish. If a recruiter phone number is not supplied or authorized, leave it blank. Users should be encouraged to verify vacancies before paying money, travelling, or sharing documents.</p>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function cfg(){return {url:localStorage.qj_url||"",key:localStorage.qj_key||""}}
+function saveConfig(){
+  localStorage.qj_url=$("url").value.trim().replace(/\/$/,"");
+  localStorage.qj_key=$("key").value.trim();
+  $("conn").textContent="Connection saved. Test it by publishing a job.";
+}
+(function(){const c=cfg();$("url").value=c.url;$("key").value=c.key;if(c.url&&c.key)$("conn").textContent="Connection configured";})();
+
+$("jobForm").addEventListener("submit",async e=>{
+ e.preventDefault(); const c=cfg(); const msg=$("msg");
+ if(!c.url||!c.key){msg.textContent="Add Supabase URL and anon key first.";return}
+ const payload={
+  code:$("code").value.trim(),title:$("title").value.trim(),category:$("category").value,
+  location:$("location").value.trim(),job_type:$("job_type").value.trim()||"Full-time",
+  salary:$("salary").value.trim(),benefits:$("benefits").value.trim(),
+  recruiter:$("recruiter").value.trim(),phone:$("phone").value.trim(),
+  whatsapp:$("whatsapp").value.trim(),source_url:$("source_url").value.trim(),
+  description:$("description").value.trim(),urgent:$("urgent").checked,status:"active"
+ };
+ try{
+  const r=await fetch(c.url+"/rest/v1/jobs",{method:"POST",headers:{
+   "apikey":c.key,"Authorization":"Bearer "+c.key,"Content-Type":"application/json","Prefer":"return=minimal"
+  },body:JSON.stringify(payload)});
+  if(!r.ok) throw new Error(await r.text());
+  msg.textContent="Job published successfully.";
+  e.target.reset();
+ }catch(err){msg.textContent="Could not publish: "+err.message}
+});
+</script>
+</body>
+</html>
