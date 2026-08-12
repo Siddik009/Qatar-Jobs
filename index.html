@@ -286,7 +286,24 @@
     html{scroll-behavior:auto;}
     .job-card{transition:none;}
   }
+
+  /* ===== EMPLOYER JOB FORM ===== */
+  .job-form{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 10px 30px -20px rgba(15,36,56,.35);}
+  .job-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .job-form label{display:block;font-size:.82rem;font-weight:600;color:var(--navy);margin-bottom:6px;}
+  .job-form input,.job-form select,.job-form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px 13px;font:inherit;background:#fff;color:var(--ink);}
+  .job-form textarea{min-height:110px;resize:vertical;}
+  .job-form .full{grid-column:1/-1;}
+  .job-form .form-actions{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap;}
+  .job-form button{background:var(--maroon);color:#fff;border:0;border-radius:8px;padding:13px 20px;font-weight:700;cursor:pointer;}
+  .job-form button:disabled{opacity:.6;cursor:not-allowed;}
+  .form-note{font-size:.82rem;color:var(--ink-soft);line-height:1.5;}
+  .form-status{font-weight:600;min-height:1.3em;}
+  .form-status.ok{color:#18794e;}
+  .form-status.err{color:var(--maroon);}
+  @media(max-width:650px){.job-form-grid{grid-template-columns:1fr;}.job-form .full{grid-column:auto;}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -418,13 +435,31 @@
   <!-- POST A JOB -->
   <section class="section" id="post" style="padding-top:0;">
     <div class="wrap">
-      <div class="post-band">
+      <div class="post-band" style="margin-bottom:20px;">
         <div>
           <h2>Hiring in Qatar? Post your vacancy free.</h2>
-          <p>Reach thousands of job seekers directly. Submit your listing and our team will verify and publish it within 24 hours.</p>
+          <p>Send your vacancy details. Your listing will stay pending until it is reviewed and approved.</p>
         </div>
-        <a class="btn-gold" href="mailto:abusiddik854@gmail.com?subject=Post%20a%20Job%20-%20Qatar%20Job">Post a Job →</a>
       </div>
+
+      <form class="job-form" id="jobPostForm">
+        <div class="job-form-grid">
+          <div><label for="title">Job title *</label><input id="title" name="title" required placeholder="e.g. Heavy Vehicle Driver"></div>
+          <div><label for="category">Category *</label><select id="category" name="category" required><option value="">Select category</option><option>Construction</option><option>Driving</option><option>Domestic Work</option><option>Hospitality</option><option>Security</option><option>Cleaning</option><option>Skilled Labor</option><option>Office / Admin</option><option>Retail</option><option>Other</option></select></div>
+          <div><label for="location">Location *</label><input id="location" name="location" required placeholder="e.g. Doha / Industrial Area"></div>
+          <div><label for="job_type">Job type</label><select id="job_type" name="job_type"><option>Full-time</option><option>Part-time</option><option>Shift-based</option><option>Live-in</option><option>Contract</option></select></div>
+          <div><label for="salary">Salary</label><input id="salary" name="salary" placeholder="e.g. QAR 2,000 / month"></div>
+          <div><label for="benefits">Benefits</label><input id="benefits" name="benefits" placeholder="e.g. Food + accommodation"></div>
+          <div><label for="recruiter">Recruiter / company name *</label><input id="recruiter" name="recruiter" required placeholder="Company or recruiter name"></div>
+          <div><label for="phone">Phone *</label><input id="phone" name="phone" required type="tel" placeholder="+974..."></div>
+          <div><label for="whatsapp">WhatsApp</label><input id="whatsapp" name="whatsapp" type="tel" placeholder="+974..."></div>
+          <div><label for="source_url">Company / source URL</label><input id="source_url" name="source_url" type="url" placeholder="https://..."></div>
+          <div class="full"><label for="description">Job description</label><textarea id="description" name="description" placeholder="Requirements, duties, experience, documents, etc."></textarea></div>
+          <div class="full"><label><input type="checkbox" id="urgent" name="urgent" style="width:auto;margin-right:8px;"> Mark as urgent</label></div>
+        </div>
+        <div class="form-actions"><button type="submit" id="submitJob">Submit Job for Review</button><div class="form-status" id="formStatus"></div></div>
+        <p class="form-note">For safety, every submission is reviewed before it can appear in the public job list. Do not submit passwords, API keys, or other private information.</p>
+      </form>
     </div>
   </section>
 
@@ -676,5 +711,49 @@ async function loadLiveJobs(){
 loadLiveJobs();
 </script>
 
+
+<script>
+const SUPABASE_URL = 'https://fxyegdimxtebocqwmhzp.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_bGAlyVM5FI1SKhPJo37bRw_Z6TEMEMz';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.getElementById('jobPostForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const btn = document.getElementById('submitJob');
+  const status = document.getElementById('formStatus');
+  btn.disabled = true;
+  status.className = 'form-status';
+  status.textContent = 'Submitting...';
+  const fd = new FormData(form);
+  const payload = {
+    code: 'QJ-' + Date.now().toString().slice(-6),
+    title: fd.get('title'),
+    category: fd.get('category'),
+    location: fd.get('location'),
+    job_type: fd.get('job_type') || 'Full-time',
+    salary: fd.get('salary') || null,
+    benefits: fd.get('benefits') || null,
+    recruiter: fd.get('recruiter'),
+    phone: fd.get('phone'),
+    whatsapp: fd.get('whatsapp') || null,
+    source_url: fd.get('source_url') || null,
+    description: fd.get('description') || null,
+    urgent: document.getElementById('urgent').checked,
+    status: 'pending'
+  };
+  const { error } = await supabaseClient.from('jobs').insert(payload);
+  if(error){
+    console.error(error);
+    status.className = 'form-status err';
+    status.textContent = 'Submission failed. Please check the form or contact us.';
+  } else {
+    status.className = 'form-status ok';
+    status.textContent = 'Submitted successfully. We will review it before publishing.';
+    form.reset();
+  }
+  btn.disabled = false;
+});
+</script>
 </body>
 </html>
