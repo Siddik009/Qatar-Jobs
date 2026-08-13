@@ -59,7 +59,7 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 async function loadPending(){
   statusEl.className="status"; statusEl.textContent="Loading...";
   const {data,error}=await client.from("jobs").select("*").eq("status","pending").order("posted_at",{ascending:false});
-  if(error){statusEl.className="status err";statusEl.textContent=error.message;return}
+  if(error){statusEl.className="status err";statusEl.textContent=error.message;console.error("loadPending",error);return}
   statusEl.textContent=data.length ? `${data.length} pending job(s)` : "No pending jobs.";
   jobsEl.innerHTML=data.map(j=>`
     <article class="job">
@@ -97,7 +97,7 @@ jobsEl.addEventListener("click",async e=>{
  const id=btn.dataset.id, action=btn.dataset.action;
  const next=action==="approve" ? "active" : "rejected";
  const {error}=await client.from("jobs").update({status:next,updated_at:new Date().toISOString()}).eq("id",id);
- if(error){statusEl.className="status err";statusEl.textContent=error.message;btn.disabled=false;return}
+ if(error){statusEl.className="status err";statusEl.textContent=error.message;console.error("update job",error);btn.disabled=false;return}
  statusEl.className="status ok";statusEl.textContent=action==="approve"?"Job approved and published.":"Job rejected.";
  loadPending();
 });

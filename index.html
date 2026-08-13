@@ -681,20 +681,18 @@ renderJobs();
 */
 const SUPABASE_URL = "https://fxyegdimxtebocqwmhzp.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_bGAlyVM5FI1SKhPJo37bRw_Z6TEMEMz";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function loadLiveJobs(){
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
 
   try{
-    const r = await fetch(
-      `${SUPABASE_URL}/rest/v1/jobs?select=*&status=eq.active&order=posted_at.desc`,
-      {headers:{
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-      }}
-    );
-    if(!r.ok) throw new Error("Database request failed");
-    const live = await r.json();
+    const { data: live, error } = await supabaseClient
+      .from("jobs")
+      .select("*")
+      .eq("status", "active")
+      .order("posted_at", { ascending: false });
+    if(error) throw error;
     if(!Array.isArray(live)) return;
 
     jobs.length = 0;
@@ -714,10 +712,6 @@ loadLiveJobs();
 
 
 <script>
-const SUPABASE_URL = 'https://fxyegdimxtebocqwmhzp.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_bGAlyVM5FI1SKhPJo37bRw_Z6TEMEMz';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 document.getElementById('jobPostForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.currentTarget;
@@ -747,7 +741,7 @@ document.getElementById('jobPostForm').addEventListener('submit', async (e) => {
   if(error){
     console.error(error);
     status.className = 'form-status err';
-    status.textContent = 'Submission failed. Please check the form or contact us.';
+    status.textContent = 'Submission failed: ' + (error.message || 'Database error');
   } else {
     status.className = 'form-status ok';
     status.textContent = 'Submitted successfully. We will review it before publishing.';
